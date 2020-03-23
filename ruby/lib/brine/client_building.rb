@@ -121,3 +121,50 @@ module Brine
   include ClientBuilding
 
 end
+
+##
+# Add a header to requests issued by the client.
+#
+# This currently uses simple parameters but may change to
+# take procs which could support deferred evaluation.
+##
+class CustomHeaderAdder < Faraday::Middleware
+
+  ##
+  # Construct an instance which will add the header and value provided.
+  #
+  # @param app [#call] Store handle provided by Farday.
+  # @param key [String] Define the name of the header which will be added.
+  # @param val [String] Define the value which will be set for the named header.
+  ##
+  def initialize(app, key, val)
+    super(app)
+    @key = key
+    @val = val
+  end
+
+  ##
+  # Add the request header as an operation handler.
+  #
+  # @param [Faraday::Env] Pass the active environment.
+  ##
+  def call(env)
+    env[:request_headers].merge!({@key => @val})
+    @app.call(env)
+  end
+end
+
+##
+# Specify a header to attach to all requests for created clients.
+#
+# @param header [Object] Name the header whose value will be set.
+# @param value [Object] Specify the value to set for the named header.
+##
+When('the client sets the header {grave_param} to {grave_param}') do |header, value|
+  interceptor = proc do |conn|
+    conn.use CustomHeaderAdder,
+             expand(header, binding), expand(value, binding)
+  end
+  connection_handlers.unshift(interceptor) unless
+    connection_handlers.include? interceptor
+end
