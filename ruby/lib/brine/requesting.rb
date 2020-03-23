@@ -190,7 +190,7 @@ end
 # @param value [Object] Specify the value to set for the named query parameter.
 ##
 When('the request query parameter {grave_param} is assigned {grave_param}') do |param, value|
-  perform { set_request_param(expand(param, value), expand(value, binding)) }
+  perform { set_request_param(expand(param, binding), expand(value, binding)) }
 end
 
 ##
