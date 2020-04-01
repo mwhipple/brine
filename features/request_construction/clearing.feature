@@ -3,32 +3,18 @@ Feature: Cleared After Sent
   are cleared and will not be present in subsequent requests.
 
   Scenario: Request body is cleared.
-    Given expected request body:
+    When the request body is assigned:
       """
       {"request":1}
       """
-    And expected PUT sent to `/profile`
-    Given expected request body:
-      """
-      """
-    And expected PUT sent to `/store`
+    And a PUT is sent to `/anything`
+    And a PUT is sent to `/anything`
 
-    When the request body is assigned:
-    """
-    {"request":1}
-    """
-    And a PUT is sent to `/profile`
-    And a PUT is sent to `/store`
-
-    Then expected calls are verified
+    Then the value of the response body child `json` is empty
 
   Scenario: Request parameter
-    Given expected GET sent to `/query?foo=bar`
-    And expected GET sent to `/resource`
+    When the request query parameter `foot` is assigned `bar`
+    And a GET is sent to `/anything`
+    And a GET is sent to `/anything`
 
-    Given the request query parameter `foo` is assigned `bar`
-    And a GET is sent to `/query`
-
-    When a GET is sent to `/resource`
-
-    Then expected calls are verified
+    Then the value of the response body child `args` is empty

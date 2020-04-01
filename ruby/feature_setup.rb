@@ -15,5 +15,9 @@
 # referencing the file from the top-level build.
 ##
 
+ENV['BRINE_DURATION_SECONDS_short'] = '3'
+ENV['BRINE_DURATION_SECONDS_long'] = '6'
+ENV['BRINE_VAR_from_env'] = 'Read from environment'
+
 require 'brine'
 World(brine_mix)

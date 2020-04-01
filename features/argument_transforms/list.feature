@@ -3,13 +3,13 @@ Feature: List
     transformed into a list whose elements will be also be transformed.
 
   Scenario Outline: Docstring simple list.
-    When the response body is assigned:
+    When the request body is assigned:
       """
       <input>
       """
-    Then the value of the response body is a valid `Array`
-    And the value of the response body is equal to `<input>`
-
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is a valid `Array`
+    And the value of the response body child `json` is equal to `<input>`
   Examples:
     | input                   |
     | []                      |
@@ -25,10 +25,10 @@ Feature: List
     | [{"i":1},{"i":2}, "h"]  |
 
   Scenario Outline: Inline simple list.
-    When the response body is assigned `<input>`
-    Then the value of the response body is a valid `Array`
-    And the value of the response body is equal to `<input>`
-
+    When the request body is assigned `<input>`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is a valid `Array`
+    And the value of the response body child `json` is equal to `<input>`
   Examples:
     | input                   |
     | []                      |

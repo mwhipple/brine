@@ -1,4 +1,4 @@
-@171
+@pending @171
 Feature: Resource Cleanup
   Resources created during testing can be marked for deletion.
 

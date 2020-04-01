@@ -2,10 +2,8 @@ Feature: Basic Request Construction
   A simple request with a specified method and path can be sent.
 
   Scenario Outline: Basic URL
-    Given expected <method> sent to `/profile`
-
-    When a <method> is sent to `/profile`
-    Then expected calls are verified
+    When a <method> is sent to `/anything`
+    Then the value of the response body child `method` is equal to `<method>`
 
   Examples:
     | method |
