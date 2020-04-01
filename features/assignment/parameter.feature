@@ -3,5 +3,6 @@ Feature: A Parameter
 
   Scenario: Simple assignment.
     Given `foo` is assigned `bar`
-    When the response body is assigned `{{ foo }}`
-    Then the value of the response body is equal to `bar`
+    When the request body is assigned `{{ foo }}`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `data` is equal to `bar`

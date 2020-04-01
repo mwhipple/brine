@@ -16,7 +16,7 @@ module Brine
     # @return [Hash<String, Object>] Return the active binding environment.
     ##
     def binding
-      @binding ||= {}
+      @binding ||= env_brine_vars
     end
 
     ##
@@ -80,6 +80,16 @@ module Brine
     ##
     def as_template(str)
       BrineTemplate.new(str)
+    end
+
+    private
+
+    ##
+    # Build a hash of environment values with a (stripped) BRINE_VAR_ prefix.
+    ##
+    def env_brine_vars
+      ENV.select{|k, v| k.start_with? 'BRINE_VAR_'}
+        .transform_keys{|k| k.delete_prefix 'BRINE_VAR_' }
     end
   end
 

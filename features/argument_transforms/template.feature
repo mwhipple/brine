@@ -6,29 +6,26 @@ Feature: Template
 
   Scenario Outline: Docstring single value template.
     When `bound` is assigned `<binding>`
-    And the response body is assigned:
+    And the request body is assigned:
       """
       {{{ bound }}}
       """
-    Then the value of the response body is equal to `<expected>`
-
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is equal to `<expected>`
   Examples:
     | binding        | expected   |
     | true           | true       |
     | -452           | -452       |
-    | ""-452""       | "-452"     |
     | ["a", 1]       | ["a", 1]   |
-    | ""["a", 1]""   | "["a", 1]" |
 
   Scenario Outline: Inline single value template.
     When `bound` is assigned `<binding>`
-    And the response body is assigned `{{{ bound }}}`
-    Then the value of the response body is equal to `<expected>`
+    And the request body is assigned `{{{ bound }}}`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is equal to `<expected>`
 
   Examples:
     | binding        | expected   |
     | true           | true       |
     | -452           | -452       |
-    | ""-452""       | "-452"     |
     | ["a", 1]       | ["a", 1]   |
-    | ""["a", 1]""   | "["a", 1]" |

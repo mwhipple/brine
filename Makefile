@@ -92,7 +92,7 @@ ${BUNDLER_INSTALLED}: | ${RUBY_OUT_DIR}
 	@cd ruby && ${BUNDLE} install
 	@touch "$@"
 
-ruby-check: export BRINE_ROOT_URL=http://www.example.com
+ruby-check: export BRINE_ROOT_URL=${FEATURE_SERVER}
 ruby-check: ${BUNDLER_INSTALLED}
 	cd ruby && ${BUNDLE} exec cucumber \
 		--require $(abspath ruby/feature_setup.rb) \
@@ -141,17 +141,20 @@ tutorial: ${BUNDLER_INSTALLED}
 # Execute checks across all runtimes.
 ##
 
-ALL_CHECKS := $(addsuffix -check, ${RUNTIMES})
+FEATURE_SERVER := https://httpbin.org
+ALL_CHECKS     := $(addsuffix -check, ${RUNTIMES})
 
 check: ${ALL_CHECKS} tutorial
 # Pass the feature directory to each check target.
 %-check: export FEATURE=$(abspath features)
 
+docker-ruby-check: export BRINE_ROOT_URL=${FEATURE_SERVER}
 docker-ruby-check: build/ruby.iid
 	@docker run --rm \
 		--mount type=bind,src=$(abspath features),dst=/features \
 		-e FEATURE=/features \
-		-e CUCUMBER_OPTS="--require /app/brine/lib/brine/test_steps.rb --tags 'not @pending'" \
+		-e BRINE_ROOT_URL \
+		-e CUCUMBER_OPTS="--tags 'not @pending'" \
 		brine:${VERSION}-ruby
 
 .PHONY: check docker-ruby-check

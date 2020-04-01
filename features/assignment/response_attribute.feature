@@ -2,25 +2,33 @@ Feature: Response Attribute
   An identifier can be assigned a value extracted from a response attribute.
 
   Scenario: Response body.
-    Given the response body is assigned `foo`
-    When `myVar` is assigned the response body
-    And the response body is assigned `{{ myVar }}`
-    Then the value of the response body is equal to `foo`
+    Given the request body is assigned `foo`
+    And a PUT is sent to `/anything`
+    When `myVar` is assigned the response body child `data`
+    And the request body is assigned `{{ myVar }}`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `data` is equal to `foo`
 
   Scenario: Response body child.
-    Given the response body is assigned `{"response": "foo"}`
-    When `myVar` is assigned the response body child `.response`
-    And the response body is assigned `{{ myVar }}`
-    Then the value of the response body is equal to `foo`
+    Given the request body is assigned `{"response": "foo"}`
+    And a PUT is sent to `/anything`
+    When `myVar` is assigned the response body child `json.response`
+    And the request body is assigned `{{ myVar }}`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `data` is equal to `foo`
 
   Scenario: Response body children.
-    Given the response body is assigned `{"response": "foo"}`
-    When `myVar` is assigned the response body children `.response`
-    And the response body is assigned `{{{ myVar }}}`
-    Then the value of the response body is equal to `["foo"]`
+    Given the request body is assigned `{"response": "foo"}`
+    And a PUT is sent to `/anything`
+    When `myVar` is assigned the response body children `json.response`
+    And the request body is assigned `{{{ myVar }}}`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is equal to `["foo"]`
 
   Scenario: Response header.
-    Given the response headers is assigned `{"test": "val"}`
+    Given the request query parameter `test` is assigned `val`
+    And a GET is sent to `/response-headers`
     When `myVar` is assigned the response headers child `test`
-    And the response body is assigned `{{ myVar }}`
-    Then the value of the response body is equal to `val`
+    And the request body is assigned `{{ myVar }}`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `data` is equal to `val`

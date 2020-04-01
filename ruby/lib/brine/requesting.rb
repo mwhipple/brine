@@ -73,7 +73,7 @@ module Brine
     # request so no extant state inadvertently pollutes the new construction.
     ##
     def reset_request
-      @params = @headers = @body = nil
+      @request_params = @headers = @body = nil
     end
 
     ##
@@ -170,6 +170,17 @@ end
 
 require 'brine/selecting'
 require 'brine/transforming'
+
+##
+# Define a body for the request currently under construction.
+#
+# @param input [String] Define the body contents to use in the request.
+##
+When('the request body is assigned {grave_param}') do |input|
+  perform do
+    set_request_body(expand(input, binding))
+  end
+end
 
 ##
 # Define a body for the request currently under construction.

@@ -1,48 +1,51 @@
 Feature: Adding Query Parameters
 
   Scenario: A single parameter is appended to the URL.
-    Given expected GET sent to `/query?foo=bar`
-
     When the request query parameter `foo` is assigned `bar`
-    And a GET is sent to `/query`
+    And a GET is sent to `/get`
 
-    Then expected calls are verified
+    Then the value of the response body child `args` is equal to:
+      """
+      {"foo": "bar"}
+      """
 
   Scenario: Multiple parameters are appended to the URL with proper formatting.
-    Given expected GET sent to `/query?foo=bar&baz=1`
-
     When the request query parameter `foo` is assigned `bar`
     And the request query parameter `baz` is assigned `1`
-    And a GET is sent to `/query`
+    And a GET is sent to `/get`
 
-    Then expected calls are verified
+    Then the value of the response body child `args` is equal to:
+      """
+      {"foo": "bar",
+       "baz": "1"}
+      """
 
   Scenario Outline: Values are encoded appropriately.
-    Given expected GET sent to `/query?foo=<encoded>`
-
     When the request query parameter `foo` is assigned `<input>`
-    And a GET is sent to `/query`
+    And a GET is sent to `/get`
 
-    Then expected calls are verified
+    Then the value of the response body child `args` is equal to:
+      """
+      {"foo": "<input>"}
+      """
 
   Examples:
-    | input         | encoded                  |
-    | bar & grill   | bar+%26+grill            |
-    | + +           | %2B+%2B                  |
-    | (imbalance))  | %28imbalance%29%29       |
+    | input         |
+    | bar & grill   |
+    | + +           |
+    | (imbalance))  |
 
   Scenario Outline: Parametes are added regardless of HTTP method.
-    Given expected <method> sent to `/query?foo=bar`
-
     When the request query parameter `foo` is assigned `bar`
-    And a <method> is sent to `/query`
+    And a <method> is sent to `/anything`
 
-    Then expected calls are verified
+    Then the value of the response body child `args` is equal to:
+      """
+      {"foo": "bar"}
+      """
 
   Examples:
     | method  |
     | POST    |
     | PUT     |
     | DELETE  |
-    | HEAD    |
-    | OPTIONS |

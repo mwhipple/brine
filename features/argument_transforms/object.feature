@@ -3,13 +3,13 @@ Feature: Object
   transformed into an object whose elements will also be transformed.
 
   Scenario Outline: Docstring simple object.
-    When the response body is assigned:
+    When the request body is assigned:
       """
       <input>
       """
-    Then the value of the response body is a valid `Object`
-    And the value of the response body is equal to `<input>`
-
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is a valid `Object`
+    And the value of the response body child `json` is equal to `<input>`
   Examples:
     | input                                               |
     | {}                                                  |
@@ -19,11 +19,10 @@ Feature: Object
     | {"foo": "\"list\": [\"1\", 2, true]"}               |
 
   Scenario Outline: Inline simple object.
-    When the response body is assigned `<input>`
-
-    Then the value of the response body is a valid `Object`
-    And the value of the response body is equal to `<input>`
-
+    When the request body is assigned `<input>`
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is a valid `Object`
+    And the value of the response body child `json` is equal to `<input>`
   Examples:
     | input                                               |
     | {}                                                  |
@@ -33,13 +32,14 @@ Feature: Object
     | {"foo": "\"list\": [\"1\", 2, true]"}               |
             
   Scenario: Object split over lines
-    When the response body is assigned:
+    When the request body is assigned:
       """
       {
         "foo":"bar"
       }
       """
-    Then the value of the response body is equal to:
+    And a PUT is sent to `/anything`
+    Then the value of the response body child `json` is equal to:
       """
       {"foo":"bar"}
       """

@@ -11,9 +11,9 @@ Gem::Specification.new do |s|
   s.summary      = "Cucumber@REST in Brine"
   s.description  = "Cucumber@REST in Brine"
 
-  s.required_ruby_version = '>= 2.3.0'
+  s.required_ruby_version = '>= 2.5.0'
 
-  s.add_runtime_dependency     'cucumber',            '~> 3.1'
+  s.add_runtime_dependency     'cucumber',            '~> 4.0.0.rc.5'
   s.add_runtime_dependency     'mustache',            '~> 1.0'
   s.add_runtime_dependency     'oauth2',              '~> 1.4'
   s.add_runtime_dependency     'rspec',               '~> 3.7'
