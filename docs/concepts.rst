@@ -8,14 +8,16 @@ The use of :samp:`\``\ s
 
 Backticks/grave accents are used as *parameter delimiters*. It is perhaps
 most helpful to think of them in those explicit terms rather than thinking of
-them as an alternate *quote* construct. In particular quoting implies that the
-parameter value is a string value, while the step transforms allow for
+them as an alternate *quote* construct. "Quoting" may invite the assumption that
+the parameter value is a string value while the type transformation allows for
 alternative data types.
 
 :samp:`\``\ s were chosen as they are less common than many other syntactical
 elements and also allow for the use of logically significant
 quoting within parameter values while hopefully avoiding the need for escape
-artistry (as used for argument transforms).
+artistry.
+
+.. _selection_and_assertion:
 
 ***********************
 Selection and Assertion
@@ -30,8 +32,8 @@ means to select the inputs for the assertion.
 To avoid this issue the concepts of selection and assertion are considered
 separate operations in Brine. Internally this corresponds to two steps:
 
-#. Assign a selector
-#. Evaluate the assertion against the selector
+#. Assign a selector.
+#. Evaluate the assertion against the selector.
 
 In standard step use this will still be expressed as a single step,
 and dynamic step definitions are used to split the work appropriately.
@@ -42,22 +44,22 @@ For example the step:
 
    Then the value of the response body is equal to `foo`
 
-Will be split where the subject of the step (``the value of the response body``)
+will be split where the subject of the step (``the value of the response body``)
 defines the selector and the predicate of the step
 ``is equal to `foo``` defines the assertion (which is translated to a
 step such as ``Then it is equal to `foo```).
 
-The result of this is that the assertion steps will always follow a pattern
+The support this the assertion steps will always follow a pattern
 where the subject resembles ``the value of ...`` and the predicate always
-resembles ``is ...``. Learning the selection phrases and the assertion phrases
-and combining them should be a more efficient and flexible way to become
-familiar with the language instead of focusing on the resulting combined steps.
+resembles ``is ...``. Learning the selection phrases, the assertion phrases
+, and how to combine them should be a more efficient and flexible way to become
+familiar with the language rather than focusing on the resulting productions.
 
 The chosen approach sacrifices eloquence for the sake of consistency.
 The predicate will always start with a variation of "to be" which can lead to
 awkward language such as ``is including`` rather than simply ``includes``.
-The consistency provides additional benefits such as consistent modification:
-for instance negation ca always be done using the "to be" verb (such as ``is not``
+The consistency provides additional benefits such as consistent modification;
+the "to be" verb can always be negated (to ``is not``), for example,
 rather than working out the appropriate phrasing for a more natural sounding step
 (let alone the logic).
 
@@ -70,40 +72,29 @@ this should help optimize code economy.
 Selection Modifiers
 ===================
 
-To pursue economical flexibility Brine steps attempt to balance step definitions
-which accommodate variations while keeping the step logic and patterns fairly
-simple. Selection steps in particular generally accept some parameters that
-affect their behavior. This allows the relatively small number of selection
-steps to provide the flexibility to empower the more numerous assertion steps.
+In the pursuit of economical flexibility Brine steps attempt to balance
+step definitions which accommodate variations while keeping the step logic
+and patterns fairly simple. Selection steps in particular generally accept
+some parameters that affect their behavior. This allows the relatively small
+number of selection steps to provide the flexibility to empower the more
+numerous assertion steps.
 
 Traversal
 ---------
 
-Selection steps can generally target the root of the object specified (such as the
+Selection steps can normally target the root of the object specified (such as the
 response body) or some nodes within the object if it is a non-scalar value
 (for instance a child of the response body).
-This is indicated in the :ref:`step_reference` by the :samp:`{[TRAVERSAL]}` placeholder.
+This is indicated in the :doc:`step_reference` by the :samp:`{[TRAVERSAL]}` placeholder.
 :samp:`child {EXPRESSION}` or :samp:`children {EXPRESSION}` can optionally be inserted
-at the placeholder to select nested nodes as described in :ref:`traversal`.
+at the placeholder to select nested nodes as described in `traversal`_.
 
 Negation
 --------
 
-The selectors also currently handle negation of the associated assertions.
-This is potentially counter-intuitive but as previously mentioned the intent is
-that this should ease the creation of assertions. If negation is added to a
-selector then it is expected that the assertion will *fail*.
-
-Negation is indicated in the :ref:`step_reference` by the presence of a
+Negation is indicated in the :doc:`step_reference` by the presence of a
 `[not]` or semantically equivalent placeholder. To negate the step the
 literal text within the placeholder should be included at the indicated position.
-
-.. note::
-
-   The implementation of negation is planned to be changed in a future version
-   but all/any existing steps will be supported at least through one major version
-   (i.e. the implementation may change for version 2 but all steps will be supported
-   until at least version 3).
 
 .. _handling nested elements:
 
@@ -129,20 +120,20 @@ object inside an object with ``data`` and ``links`` sub-objects (Hypermedia API)
 
    Then the value of the response status is equal to `201`
    And the value of the response body child `data.skills` is a valid `Array`
-   And the value of the response body child `data.skills is including:
+   And the value of the response body child `data.skills` is including:
      """
      "Multiverse-homicide"
      """
-   And the value of the response body child `data.skills is including:
+   And the value of the response body child `data.skills` is including:
      """
      "Being the one"
      """
 
 The above example uses child comparison against type and value, and verifies
-multiple elements from PUT body. This can be useful if your response contains
-HATEOAS (Hypermedia As The Engine Of Application State) Links. The end goal is
+multiple elements from the body. This can be useful if your response contains
+HATEOAS (Hypermedia As The Engine Of Application State) links. The end goal is
 that anyone reading the specification will be able to ascertain without
-cucumber or DSL knowledge what the intent is.
+Cucumber or DSL knowledge what the intent is.
 
 If order can be guaranteed then checks could be combined into a simpler format:
 
@@ -158,7 +149,7 @@ If order can be guaranteed then checks could be combined into a simpler format:
 .. todo:: This should also be supported through pending set equality assertions.
 
 On a more serious note, the above could also be used to verify business logic
-such as for medical professionals working with large insurers or healthcare
+such as for medical professionals working with large insurers or healthcare where
 the line-items usually have to be sorted by price descending.
 
 .. _resource_cleanup:
@@ -212,15 +203,14 @@ Restricted Official Usage
 
 This functionality could be used to support a wide range
 of functionality, but functionality will be added to the core library
-conservatively in response to use cases established in practice or in
-response to opened issues. Reservation to add such features is due to
+conservatively to address actual issues encountered or specific cases
+identified by opened issues. Reservation to add such features is due to
 `YAGNI <http://wiki.c2.com/?YouArentGonnaNeedIt>`_ with an additional
-concern that some of that functionality could obscure the primary intent
-of this library and foster its use for situations where a another solution
-(such as a general purpose language) may be better suited.
+concern that some of that functionality could dillute the focus of
+this library.
 
 Such functionality which is not offered by the official library can
-leverage the _actions_ featue and be implemented with a fairly small
+leverage the _actions_ feature and be implemented with a fairly small
 amount of code; more information will be provided through Articles.
 
 Supported Functionality
@@ -235,8 +225,8 @@ For any system which may perform background work or uses a model of
 eventual consistency there may be a delay before the expected state
 is realized. To support such cases Brine supports the concept of polling.
 Polling allows the definition of a set of actions which will be repeated
-until they succeed for until some duration of time expires (at which point
-the actions will fail).
+until they succeed or until some duration of time expires (at which point
+last failure will be returned).
 
 For example a code block such as:
 
@@ -247,39 +237,41 @@ For example a code block such as:
      Then the value of the response body child `completed` is equal to `true`
    And the actions are successful within a `short` period
 
-Will repeatedly issue a request to the specified status endpoint until the
+will repeatedly issue a request to the specified status endpoint until the
 resource indicates it is completed. The indendation is not required but may
 help readability. It is important that any such actions definition is *closed*
-(something is done with the actions), otherwise the system will just continue to
-collect actions.
+(something is done with the actions such as the outdented polling step above),
+otherwise the system will just continue to collect actions.
 
 Specifying Duration
 ^^^^^^^^^^^^^^^^^^^
 
+As mentioned above, polling will be bound by a duration withiin which the actions must be satisfied.
+
 Specifications should represent the contract with customers, and therefore any delay
 captured in the specification should correspond to what is guaranteed to clients.
 
-If your system has a duration within which it is guaranteed that the tested state must be realized
-then such time should be in the specification and parsed from that file (this parsing is not
-currently supported, an issue should be opened if this is desired). In other cases the
-duration should be specified using an appropriately fuzzy term (such as `short`) which can
-be passed as a parameter to the system. The durations can be defined using environment variables
-of the format :envvar:`BRINE_DURATION_SECONDS_${duration}`, so for the above a setting such as
+If the system under test has a duration within which it is guaranteed that the tested state
+must be realized then such time should be in the specification and parsed from that file;
+such parsing is not currently supported so an issue should be opened if it is desired.
+In other cases the duration should be specified using an appropriately fuzzy term (such as `short`)
+which can be passed as a parameter to the test execution.
+The durations can be defined using environment variables of the format
+:envvar:`BRINE_DURATION_SECONDS_${duration}`; for the above a setting such as
 `BRINE_DURATION_SECONDS_short=5` would poll for 5 seconds. In addition to not polluting the
-specification with what may not belong there, the use of such looser terms
-allows for values to be varied due to any variations within or between environments or
-deployments.
+specification with what may not belong there the use of such looser terms
+allows for values to vary to accommodate differences between environments or deployments.
 
 Specifying Polling Frequency
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A reasonable default value for the interval between polling attempts will be set, currently
-0.25 seconds. If for any reason it is desired to change this time then a new value can be
+A reasonable default value for the interval between polling attempts will be set: currently
+0.25 seconds.  If for any reason it is desired to change this time then a new value can be
 provided as the :envvar:`BRINE_POLL_INTERVAL_SECONDS` environment variable.
 
 Currently all polling will use the same global setting for the polling interval. If there is
-a desire to have finer control, then open an issue (most likely through support for per-duration
-overrides).
+a desire to have finer control, then open an issue (most likely support for per-duration
+overrides would be added).
 
 .. note::
 	The interval will affect the precision of the polling duration. With the numbers in
@@ -288,5 +280,5 @@ overrides).
 	time, and a sleeping thread will be activated in *no less than* the time requested.
 	Therefore the polling will not align with the duration and the interval also determines
 	how much the effective polling duration deviates from that requested. The values should be
-	adjusted/padded appropriately (anticipate :math:`duration +/- interval`).
+	adjusted/padded appropriately to allow for such slop (anticipate :math:`duration +/- interval`).
 	Precise matching of durations is non-trivial and outside the scope of this project.

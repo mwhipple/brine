@@ -33,7 +33,7 @@ and performing assertions against the received response.
       "last_name": "Smith"}
      """
    And a POST is sent to `/users`
-   Then the value of the response status is equal to `200`
+   Then the value of the response status is equal to `201`
    And the value of the response body is including:
      """
      {"first_name": "John",
@@ -44,34 +44,38 @@ and performing assertions against the received response.
 Key Features
 ************
 
+Request Construction and Response Assertion Step Definitions
+	The most essential feature is that which is menthoed above: the ability
+	to issue constructed requests and validate responses. The other features
+	largely supplement this core functionality to support a wider range of
+	use cases.
+
 Variable Binding/Expansion
-	In cases where dynamic data is in the response or is desired for the
-	request, then values can be bound to identifiers which can then be
+	To support cases where dynamic data is in the response or is desired for the
+	request, values can be bound to identifiers which can then be
 	expanded using `Mustache <http://mustache.github.io>`_ templates in
 	your feature files.
 
-Type Transforms
+Type Conversion and Coercion
 	Different types of data can be expressed directly in the feature files
 	or expanded into variables by using the appropriate syntax for that type.
-
-Type Coercion
-	Related to transforms, a facility ito coerce types is also provided.
-	This allows more intelligent comparison of inputs which have been transformed
-	to a richer data type with those that have not been transformed (normally strings).
-	As an example, comparing a date/time value with a string will attempt to parse
-	the string to a date/time so shtat the values can be compared using the proper
-	semantics.
+	A facility it coerce types to allow more intelligent comparison of calues
+	is also provided. This allows for implicit conversion of simpler values
+	(normally strings) when paired with an operand of a richer type
+	(such as a date/time).
 
 :ref:`resource_cleanup`
-	Tests are likely to create resources which should then be cleaned up,
-	restoring the pre-test state of the system.
+	Tests are likely to create resources which should then be cleaned up
+	so that the system can be restored to its pre-test state.
 	Steps to facilitate this are provided.
 
-Authentication
-	Presently OAuth2 is supported to issue authenticated requests during a
-	test (likely using a feature :keyword:`Background`).
+Common Client Behavior
+	Clients can be configured to adopt standard behavior such as adding
+	headers to satisfy security requirements.
 
-Request Construction and Response Assertion Step Definitions
-	The previous features combined with the library of provided steps should
-	cover all of the functionality needed to exercise and validate all of
-	the functionality exposed by your REST API.
+Definition of Reusable Actions
+	Rather than executing actions immediately they can be stored for
+	subsequent evaluation. This is currently used to support polling
+	behavior to allow for delayed convergence (such as when using eventually
+	consistent systems), but the mechnism can be extended to provide a
+	range of functionality.

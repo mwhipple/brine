@@ -13,41 +13,36 @@ Setting BRINE_ROOT_URL
 
 Brine expects steps to use relative URLs. The feature files specify
 the behavior of an API (or multiple APIs), while the root of the
-URLs define where that API is, so this is a natural mapping.
-More practically, when developing an API it's likely to
-be promoted across various environments such as
-local, qa, stage, and production so having a parameterized root for
-the URLs eases this while encouraging inter-environment consistency.
+define where to reach that API, so this should align with a natural
+separation of API behavior and location.
+More practically an API is likely to exist
+across various environments such as local, qa, stage, and production;
+having a parameterized root for the URLs eases switching between these
+while encouraging inter-environment consistency.
 
-For simple cases where all tests are to be run against the same root,
-the root url can be specified with the environment variable
-:envvar:`BRINE_ROOT_URL`.
-
-This can be specified when running :term:`Cucumber` with a command such as:
+When all tests are to be run against the same root url, the value of the
+root can be specified with the environment variable :envvar:`BRINE_ROOT_URL`.
+This can be set when running Cucumber with a command such as:
 
 .. code-block:: shell
 
    BRINE_ROOT_URL=https://api.myjson.com/ cucumber
 
-...or this can be managed as part of a :term:`Rake` task such as:
-
-.. code-block:: ruby
-
-   Cucumber::Rake::Task.new do
-     ENV['BRINE_ROOT_URL'] = 'https://api.myjson.com/'
-   end
-
-...or by any other means that populates the environment appropriately.
+or by any other means that populates the environment appropriately.
 
 A personally preferred approach is to have per-environment make files and
-include the desired file(s) into the main file.
+include the desired file(s) into the main make file with a line such as:
+
+.. code-block::
+
+   -INCLUDE ${ENV}.env
 
 ===========
 A Basic GET
 ===========
 
 Most tests will involve some form of issuing requests and performing assertions
-on the responses. Let's start with a simple version of that pattern,
+on the responses. Let's start with a simple version of that pattern:
 testing the response status from a GET request.
 
 .. literalinclude:: ../tutorial/missing.feature

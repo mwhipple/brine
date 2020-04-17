@@ -1,12 +1,10 @@
-.. _traversal:
-
 #########
 Traversal
 #########
 
 The language exposed by Brine is flat but the data returned by the server is
 likely to include deeper data structures such as objects and collections. To
-allow selection within such structures a :keyword:`traversal` language is embedded within
+allow selection within such structures a **traversal** language is embedded within
 some steps which will be indicated by the use of the ``TRAVERSAL`` placeholder.
 
 The traversal language consists of a selected subset of
@@ -36,10 +34,14 @@ Each traversal expression will select *all* matching nodes which is therefore
 represented as a collection. Often, however, only a single node is expected or
 desired. Therefore the traversal expression will also be accompanied by a phrase
 which defines the expected cardinality, normally ``child`` and ``children``.
-``children`` will *always* return an array while ``child`` will return what would be the
-first element in that array. ``child`` should be used when accessing a specific node within
-the tree, while ``children`` should be used for a query across multiple nodes
-(such as testing the value of a field for every element in a collection).
+``children`` will *always* return an array corresponding to all matched values
+while ``child`` will return the first matched value. When the targeted values
+is one or more arrays then ``children`` would return an array of such arrays
+whereas ``child`` would return the first such array. The distinction is therefore
+about the number of children matching the traversal path and not the type of
+such matched values: an single array should be retrieved with ``child``,
+extracting an array of specific attribute collected from an array of objects
+should be done with ``children``.
 
 ***********
 Expressions
@@ -57,3 +59,4 @@ Expressions
    :samp:`.[{FROM}:{TO}]`
 	Access a slice of the array containing the elements at index
 	:samp:`{FROM}` through :samp:`{TO}` (including both limits).
+	TODO: Are both really included? A half-open interval seems more standard.

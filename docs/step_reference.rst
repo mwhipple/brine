@@ -1,5 +1,3 @@
-.. _step_reference:
-
 ##############
 Step Reference
 ##############
@@ -22,9 +20,9 @@ The requests which are sent as part of a test are constructed using a
 	HTTP :samp:`{METHOD}` and :samp:`{PATH}`, this step is considered
 	required and is therefore used to send the built request.
 	This should therefore be the *last* step for any given request
-	that is being built.
+	that is built.
 
-   :samp:`When the request body is assigned`
+   :samp:`When the request body is assigned:`
 	The multiline content provided will be assigned to the body of the request.
 	This will normally likely be the JSON representation of the data.
 
@@ -41,7 +39,24 @@ The requests which are sent as part of a test are constructed using a
 
    :samp:`When the request credentials are set for basic auth user \`{USER}\` and password \`{PASSWORD}\``
 	Assign HTTP Basic :samp:`Authorization` header.
-	Will overwrite any earlier value for the :samp:`Authorization` header, including those set in earlier steps.
+	Will overwrite any earlier value for the :samp:`Authorization` header including those set in earlier steps.
+
+.. _step_reference_client_configuration:
+
+********************
+Client Configuration
+********************
+
+These steps modify the client in a way that will impact all requests sent, including any that are
+built and sent or issued during resource cleanup.
+
+:ref:`Specification <spec_client_configuration>`
+
+.. glossary::
+
+   :samp:`Given the client sets the header \`{HEADER}\` to \`{VALUE}\``
+        Include the header :samp:`{HEADER}` with value samp:`{VALUE}` on
+	each sent request.
 
 .. _step_reference_resource_cleanup:
 
@@ -106,7 +121,7 @@ Selection
 	of the current HTTP response.
 
    :samp:`Then the value of the response {(body|status|headers)} {[TRAVERSAL]} does {[not]} have any element that is`
-	Select any (at least one) element from the structure within the specified response attribute
+	Select any (at least one satisfying) element from the structure within the specified response attribute
 	(at the optional traversal path).
 
    :samp:`Then the value of the {(body|status|headers)} {[TRAVERSAL]} has elements which are all`
@@ -156,7 +171,7 @@ Assertion
 	Assert that the selected value is a valid instance of a :samp:`{TYPE}`.
 	Presently this is focused on standard data types (initially based on
 	those specified by JSON), but it is designed to handle user specified
-	domain types pending soe minor wiring and documentation.
+	domain types pending some minor wiring and documentation.
 	The current supported types are:
 
 	- ``Array``
@@ -186,5 +201,5 @@ Actions
    :samp:`Then the actions are {[not]} successful within a \`${DURATION}\` period`
 	Repeatedly attempt to perform collected actions over the course of
 	:samp:`{DURATION}`. Succeed if the actions are performed successfully,
-	fail if the duration expirees without a successful performance.
+	fail if the duration expires without a successful performance.
 

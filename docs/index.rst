@@ -13,7 +13,7 @@ descriptions here should help indicate which section is the best
 resource for a particular type of need. If there are questions
 which are not answered after consulting the appropriate section of
 documentation, then please file a
-`documentation bug <https://github.com/brightcove/brine/issues/new?labels=bug,documentation>`_.
+`documentation bug <https://github.com/mwhipple/brine/issues/new?labels=bug,documentation>`_.
 
 :ref:`toc-user-guide`
 	The User Guide provides an introduction to the use and
