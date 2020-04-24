@@ -94,6 +94,6 @@ require 'brine/transforming'
 #
 # @param type [Object] Specify the key for the type checker to evaluate the selection.
 ##
-Then('it is a valid {grave_param}') do |type|
-  perform { selector.assert_that(type, binding) {|t| type_check_for(t) } }
+Then('it is{maybe_not} a valid {grave_param}') do |negated, type|
+  perform { selector.assert_that(type, binding, negated) {|t| type_check_for(t) } }
 end
