@@ -6,30 +6,42 @@
 require 'brine/transforming'
 
 ##
+# Indicate whether the assertion should be expected to fail.
+##
+ParameterType(
+  name: 'maybe_not',
+  regexp: /( not)?/,
+  transformer: -> (input=nil) { !input.nil? }
+)
+
+##
 # Assert that the selected value is equal to the parameter.
 #
 # @param value [Object] Specify the value which the selection should equal.
+# @param negated [boolean] Indicate whether the assertion should be negated.
 ##
-Then('it is equal to {grave_param}') do |value|
-  perform { selector.assert_that(value, binding) {|v| eq v} }
+Then('it is{maybe_not} equal to {grave_param}') do |negated, value|
+  perform { selector.assert_that(value, binding, negated) {|v| eq v} }
 end
 
 ##
 # Assert that the selected value is equal to the docstring.
 #
 # @param multi [String] Specify the value which the selection should equal.
+# @param negated [boolean] Indicate whether the assertion should be negated.
 ##
-Then('it is equal to:') do |value|
-  perform { selector.assert_that(transformed_parameter(value), binding) {|v| eq v} }
+Then('it is{maybe_not} equal to:') do |negated, value|
+  perform { selector.assert_that(transformed_parameter(value), binding, negated) {|v| eq v} }
 end
 
 ##
 # Assert that the selected value matches the parameter.
 #
 # @param value [Object] Specify the pattern which the selection should match.
+# @param negated [boolean] Indicate whether the assertion should be negated.
 ##
-Then('it is matching {grave_param}') do |value|
-  perform { selector.assert_that(value, binding) {|v| match v} }
+Then('it is{maybe_not} matching {grave_param}') do |negated, value|
+  perform { selector.assert_that(value, binding, negated) {|v| match v} }
 end
 
 ##
@@ -81,9 +93,11 @@ end
 # Assert that the selected value is empty.
 #
 # This will be satisfied by nil or any object which returns a truthy #empty?
+#
+# @param negated [boolean] Indicate whether the assertion should be negated.
 ##
-Then('it is empty') do
-  perform { selector.assert_that(nil, binding) do
+Then('it is{maybe_not} empty') do |negated|
+  perform { selector.assert_that(nil, binding, negated) do
     satisfy{|i| i.nil? || (i.respond_to?(:empty?) && i.empty?) }
   end }
 end
@@ -92,18 +106,20 @@ end
 # Assert that the selected value includes the parameter.
 #
 # @param value [Object] Specify content which should be within the selection.
+# @param negated [boolean] Indicate whether the assertion should be negated.
 ##
-Then('it is including {grave_param}') do |value|
-  perform { selector.assert_that(value, binding) {|v| include v } }
+Then('it is{maybe_not} including {grave_param}') do |negated, value|
+  perform { selector.assert_that(value, binding, negated) {|v| include v } }
 end
 
 ##
 # Assert that the selected value includes the docstring.
 #
 # @param value [String] Specify content which should be within the selection.
+# @param negated [boolean] Indicate whether the assertion should be negated.
 ##
-Then('it is including:') do |value|
-  perform { selector.assert_that(transformed_parameter(value), binding) {|v| include v } }
+Then('it is{maybe_not} including:') do |negated, value|
+  perform { selector.assert_that(transformed_parameter(value), binding, negated) {|v| include v } }
 end
 
 ##
@@ -113,10 +129,11 @@ end
 # chain to another dynamic step such as `is of lenth that is ...`
 #
 # @param length [Object] Specify the length which the selection should have.
+# @param negated [boolean] Indicate whether the assertion should be negated.
 ##
-Then('it is of length {grave_param}') do |length|
+Then('it is{maybe_not} of length {grave_param}') do |negated, length|
   perform do
-    selector.assert_that(length, binding) do |l|
+    selector.assert_that(length, binding, negated) do |l|
       satisfy{|i| i.respond_to?(:length) && i.length == l}
     end
   end

@@ -36,12 +36,9 @@ module Brine
       # Construct a selector to perform assertions against a provided target.
       #
       # @param target [Object] Provide the value against which assertions will be performed.
-      # @param negated [Boolean] Specify whether the assertions from this selector should be negated.
-      #                          This is deprecated and should instead be passed to #assert_that.
       ##
-      def initialize(target, negated=false)
+      def initialize(target)
         @target = target
-	@negated = negated
       end
 
       ##
@@ -70,9 +67,7 @@ module Brine
       # @param [Block] Define the logic  which will be passed a coerced copy of `value` and which should return an
       #                RSpec matcher which will be evaluated against the coerced target value.
       ##
-      def assert_that(value, binding, negated=nil)
-        # shim while moving negation to assertions.
-        negated = @negated if negated.nil?
+      def assert_that(value, binding, negated=false)
         target, value = coercer.coerce(expand(@target, binding), expand(value, binding))
         message = negated ? :to_not : :to
         matcher = filter_matcher(yield(value))
@@ -103,30 +98,27 @@ module Brine
     # Activate a Selector for the provided target.
     #
     # @param target [Object] Provide the value which the Selector should target.
-    # @param negated [Boolean] Specify whether the assertions should be expected to fail (DEPRECATED).
     ##
-    def select(target, negated=nil)
-      use_selector(Selector.new(target, negated))
+    def select(target)
+      use_selector(Selector.new(target))
     end
 
     ##
     # Activate a Selector for any of the children of the provided target.
     #
     # @param target [Object] Provide the value which the Selector should target.
-    # @param negated [Boolean] Specify whether the assertions should be expected to fail (DEPRECATED).
     ##
-    def select_any(target, negated=nil)
-      use_selector(AnySelector.new(target, negated))
+    def select_any(target)
+      use_selector(AnySelector.new(target))
     end
 
     ##
     # Activate a Selector for all of the children of the provided target.
     #
     # @param target [Object] Provide the value which the Selector should target.
-    # @param negated [Boolean] Specify whether the assertions should be expected to fail (DEPRECATED).
     ##
-    def select_all(target, negated=nil)
-      use_selector(AllSelector.new(target, negated))
+    def select_all(target)
+      use_selector(AllSelector.new(target))
     end
 
     ##
@@ -226,15 +218,6 @@ ParameterType(
 )
 
 ##
-# Indicate whether not is present.
-##
-ParameterType(
-  name: 'maybe_not',
-  regexp: /( not)?/,
-  transformer: -> (input=nil) { !input.nil? }
-)
-
-##
 # Extract the text for a supported response attribute.
 ##
 ParameterType(
@@ -282,10 +265,10 @@ end
 # @param negated [Boolean] Specify whether the assertion should be expected to fail (DEPRECATED).
 # @param assertion [Object] Provide the assertion step to evaluate.
 ##
-Then('the value of the response {response_attribute}{traversal} is{maybe_not} {assertion}') do
-  |attribute, traversal, negated, assertion|
+Then('the value of the response {response_attribute}{traversal} is {assertion}') do
+  |attribute, traversal, assertion|
   perform do
-    select(traversal.visit(response_attribute(attribute)), negated)
+    select(traversal.visit(response_attribute(attribute)))
     step "it is #{assertion}"
   end
 end
@@ -300,10 +283,10 @@ end
 # @param assertion [Object] Provide the assertion step to evaluate.
 # @param multi [String] Pass a docstring parameter which will be forwarded to the assertion.
 ##
-Then('the value of the response {response_attribute}{traversal} is{maybe_not} {assertion}:') do
-  |attribute, traversal, negated, assertion, multi|
+Then('the value of the response {response_attribute}{traversal} is {assertion}:') do
+  |attribute, traversal, assertion, multi|
   perform do
-    select(traversal.visit(response_attribute(attribute)), negated)
+    select(traversal.visit(response_attribute(attribute)))
     step "it is #{assertion}:", multi
   end
 end
@@ -313,14 +296,28 @@ end
 #
 # @param attribute [String] Indicate from which response attribute the values will be selected.
 # @param traversal [Traversal] Provide a Traversal to retrieve values from the attribute.
-# @param negated [Boolean] Specify whether the assertion should be expected to fail (DEPRECATED).
 # @param assertion [Object] Provide the assertion step to evaluate.
 ##
-Then('the value of the response {response_attribute}{traversal} does{maybe_not} have any element that is {assertion}') do
-  |attribute, traversal, negated, assertion|
+Then('the value of the response {response_attribute}{traversal} does have any element that is {assertion}') do
+  |attribute, traversal, assertion|
   perform do
-    select_any(traversal.visit(response_attribute(attribute)), negated)
+    select_any(traversal.visit(response_attribute(attribute)))
     step "it is #{assertion}"
+  end
+end
+
+##
+# Evaluate an assertion for no matching value from the response attribute.
+#
+# @param attribute [String] Indicate from which response attribute the values will be selected.
+# @param traversal [Traversal] Provide a Traversal to retrieve values from the attribute.
+# @param assertion [Object] Provide the assertion step to evaluate.
+##
+Then('the value of the response {response_attribute}{traversal} does not have any element that is {assertion}') do
+  |attribute, traversal, assertion|
+  perform do
+    select_any(traversal.visit(response_attribute(attribute)))
+    step "it is not #{assertion}"
   end
 end
 
@@ -351,7 +348,7 @@ end
 Then('the value of the response {response_attribute}{traversal} has elements which are all {assertion}') do
   |attribute, traversal, assertion|
   perform do
-    select_all(traversal.visit(response_attribute(attribute)), false)
+    select_all(traversal.visit(response_attribute(attribute)))
     step "it is #{assertion}"
   end
 end
