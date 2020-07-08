@@ -235,11 +235,7 @@ ParameterType(
 ParameterType(
   name: 'traversal',
   regexp: /(?: child(ren)? `([^`]*)`)?/,
-  transformer: -> (plural_or_path=nil, path=nil) {
-    if path.nil?
-      path=plural_or_path
-      plural_or_path=nil
-    end
+  transformer: -> (plural_or_path, path) {
     traversal(path, plural_or_path)
   }
 )

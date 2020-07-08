@@ -11,7 +11,7 @@ require 'brine/transforming'
 ParameterType(
   name: 'maybe_not',
   regexp: /( not)?/,
-  transformer: -> (input=nil) { !input.nil? }
+  transformer: -> (input) { !input.nil? }
 )
 
 ##

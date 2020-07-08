@@ -1,4 +1,4 @@
-FROM ruby:2.5.7-alpine3.11
+FROM ruby:2.7-buster
 
 ARG brine_version
 ENV VERSION=$brine_version
