@@ -1,7 +1,9 @@
 > [!NOTE]
-> This project is archived due to lack of current personal use and limited known adoption.
+> This project is not actively maintained due to lack of current personal use and limited known adoption.
 > There are compatibility issues with Ruby 3 as reported in [this issue](https://github.com/mwhipple/brine/issues/11).
 > If there is active interest in use, please [discuss](https://github.com/mwhipple/brine/discussions/13)
+
+GitHub archival is not currently used since it makes all associated information read-only.
 
 # Brine
 
@@ -15,7 +17,7 @@ https://brine.readthedocs.io/
 
 ### Status
 
-Archived
+Stale
 
 ### Type
 
